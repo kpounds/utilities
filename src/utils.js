@@ -11,3 +11,8 @@ function interpolateData(template, data) {
   });
   return rendered;
 }
+
+// jQuery free way to change CSS attribute by ID 
+function changeCSS(id, attribute, value) {
+  document.getElementById(id).style[attribute] = value;
+};
