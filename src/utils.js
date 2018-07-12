@@ -16,3 +16,28 @@ function interpolateData(template, data) {
 function changeCSS(id, attribute, value) {
   document.getElementById(id).style[attribute] = value;
 };
+
+// convert and clean up string for UTC time to Central time 
+// takes parameter of 5 or 6 depending on Daylight savings time
+function convertUTCtoCDT(dst) {
+  const timelagging = dst; // 5 or 6 for Daylight Savings
+  const utc = new Date();
+  const cdt = new Date(utc.getTime() - 1 * 60 * 60 * 1000 * timelagging)
+    .toISOString()
+    .replace(/T/, ' ')
+    .replace(/\..+/, '');
+  return cdt;
+}
+
+// create log file for NodeJS logging server side
+// need to import node util and fs to write to a file
+const logFile = fs.createWriteStream(`${__dirname}/logs/debug.log`, {
+  flags: 'w'
+});
+const logStdout = process.stdout;
+const debugLog = (string, data) => {
+  logFile.write(
+    `${convertUTCtoCDT(5)} - ${util.format(string)}\n${util.format(data)}\n`
+  );
+  logStdout.write(`${util.format(string)}\n${util.format(data)}\n`);
+};
